@@ -1,46 +1,48 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
   <meta charset="UTF-8">
   <title>Worklog</title>
 
-  <link rel="stylesheet" href="css/styles.css">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai&display=swap" rel="stylesheet">
-
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <!-- ✅ ใช้ Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 
 <body>
 
-<header>
-  <div id="userInfo"></div>
-  <button onclick="logout()">Logout</button>
-</header>
+<h2>Daily Worklog</h2>
 
-<div class="container">
-  <h2>Daily Worklog</h2>
+<div id="userBox"></div>
+<button onclick="logout()">Logout</button>
 
-  <!-- FORM -->
-  <div id="formSection"></div>
+<br><br>
 
-  <!-- TABLE -->
-  <div id="tableSection"></div>
+<input type="date" id="date">
+<input type="time" id="in">
+<input type="time" id="out">
+<input type="number" id="break" value="1">
 
-  <!-- CHART -->
-  <canvas id="incomeChart"></canvas>
+<label>OT</label>
+<input type="checkbox" id="ot">
 
-</div>
+<label>Close +40</label>
+<input type="checkbox" id="close">
 
+<br><br>
+
+<button onclick="save()">Save</button>
+
+<hr>
+
+<div id="table"></div>
+
+<canvas id="chart"></canvas>
+
+<!-- โหลดไฟล์ตามลำดับ -->
 <script src="firebase-config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/db.js"></script>
