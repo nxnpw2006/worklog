@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Worklog</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai&display=swap" rel="stylesheet">
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+</head>
+
+<body>
+
+<header>
+  <div id="userInfo"></div>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+  <h2>Daily Worklog</h2>
+
+  <!-- FORM -->
+  <div id="formSection"></div>
+
+  <!-- TABLE -->
+  <div id="tableSection"></div>
+
+  <!-- CHART -->
+  <canvas id="incomeChart"></canvas>
+
+</div>
+
+<script src="firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
