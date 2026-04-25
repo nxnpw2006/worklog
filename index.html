@@ -3,319 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Worklog - Full System</title>
-    
-    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
-    
+    <title>Daily Worklog System</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
+
         :root {
             --black: #000000;
             --white: #ffffff;
             --cream: #fdfdf5;
-            --border-width: 2px;
-            --shadow: 5px 5px 0px var(--black);
+            --border: 2px solid #000000;
+            --shadow: 5px 5px 0px #000000;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--white);
             font-family: 'Prompt', sans-serif;
-            margin: 0;
+            background-color: var(--white);
+            display: flex;
+            justify-content: center;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            color: var(--black);
+            margin: 0;
         }
 
-        .container { width: 100%; max-width: 500px; }
+        .container { width: 100%; max-width: 550px; }
 
-        /* --- Header & User Section --- */
-        .top-nav {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
+        /* Header */
+        .header { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .btn-logout { border: 1px solid black; background: white; padding: 2px 10px; cursor: pointer; font-size: 12px; }
+        .title { text-align: center; font-size: 20px; font-weight: 600; letter-spacing: 2px; margin: 20px 0; }
 
-        #user-info { font-size: 13px; font-weight: 400; }
-
-        .btn-logout {
-            background: var(--white);
-            border: 1.5px solid var(--black);
-            padding: 4px 12px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .main-title {
-            text-align: center;
-            font-weight: 600;
-            font-size: 18px;
-            letter-spacing: 2px;
-            margin: 20px 0 30px 0;
-        }
-
-        /* --- Card Design --- */
+        /* Card Style */
         .card {
-            border: var(--border-width) solid var(--black);
+            border: var(--border);
             box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 35px;
+            padding: 20px;
+            margin-bottom: 30px;
             background: var(--white);
         }
 
-        /* --- Grid System --- */
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+        /* Form Grid */
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .field label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 8px; border: var(--border); font-family: inherit; outline: none; }
 
-        .input-group label {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
+        /* Toggle Buttons (Yes/No) */
+        .toggle-group { display: flex; border: var(--border); height: 35px; overflow: hidden; }
+        .toggle-group input { display: none; }
+        .toggle-group label { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        
+        .label-yes { background: var(--white); color: var(--black); border-right: 1px solid black; }
+        .label-no { background: var(--black); color: var(--white); }
 
-        input:not([type="checkbox"]), select {
-            width: 100%;
-            padding: 10px;
-            border: var(--border-width) solid var(--black);
-            font-family: inherit;
-            font-size: 13px;
-            outline: none;
-        }
+        input:checked + .label-yes { background: var(--black); color: var(--white); }
+        input:checked ~ .label-no { background: var(--white); color: var(--black); }
 
-        /* --- Toggle Buttons (OT & ปิดร้าน) --- */
-        .toggle-wrapper {
-            display: flex;
-            border: var(--border-thick) solid var(--black);
-            height: 40px;
-            overflow: hidden;
-            border: 2px solid black;
-        }
-
-        .toggle-wrapper input { display: none; }
-
-        .toggle-wrapper label {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-
-        /* สถานะ Default: No ดำ / Yes ขาว */
-        .choice-yes { background: var(--white); color: var(--black); border-right: 1px solid black; }
-        .choice-no { background: var(--black); color: var(--white); }
-
-        /* เมื่อกดเลือก: สลับสี */
-        input:checked + .choice-yes { background: var(--black); color: var(--white); }
-        input:checked ~ .choice-no { background: var(--white); color: var(--black); }
-
-        /* --- Save Button --- */
+        /* Main Button */
         .btn-save {
-            width: 100%;
-            background: var(--black);
-            color: var(--white);
-            border: none;
-            padding: 15px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 5px;
-            font-family: inherit;
+            width: 100%; background: var(--black); color: var(--white);
+            border: none; padding: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
         }
 
-        /* --- Table Section --- */
-        .filter-area {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
+        /* Table Section */
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
+        th { border-bottom: 1px solid black; padding: 10px 5px; }
+        td { padding: 15px 5px; text-align: center; border-bottom: 1px solid #eee; }
 
-        .filter-area select { width: auto; min-width: 110px; text-align: center; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
-
-        thead th {
-            padding-bottom: 12px;
-            border-bottom: 2px solid var(--black);
-            font-weight: 600;
-        }
-
-        tbody td {
-            padding: 18px 4px;
-            text-align: center;
-        }
-
-        /* --- Action Buttons (✎ / 🗑) --- */
         .btn-action {
-            background: var(--white);
-            border: 1.5px solid var(--black);
-            width: 35px;
-            height: 45px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0 2px;
+            background: white; border: 1.5px solid black; width: 30px; height: 40px;
+            cursor: pointer; font-size: 14px; margin: 0 2px;
         }
 
-        /* --- Summary Section --- */
+        /* Summary Area */
         .summary-box {
-            background-color: var(--cream);
-            border: 1px solid #e0e0e0;
-            padding: 30px 20px;
-            text-align: center;
-            margin-top: 10px;
+            background: var(--cream); border: 1px solid #ddd;
+            padding: 20px; text-align: center; margin-top: 10px;
         }
+        .summary-total { font-size: 26px; font-weight: 600; margin-top: 10px; }
 
-        .summary-details {
-            display: flex;
-            justify-content: space-around;
-            font-size: 12px;
-            margin-bottom: 15px;
-            color: #444;
-        }
-
-        .total-pay { font-size: 28px; font-weight: 600; }
-
-        /* --- SweetAlert Neubrutalism Style --- */
-        .brutal-popup {
-            border: 2px solid black !important;
-            border-radius: 0px !important;
-            box-shadow: 4px 4px 0px black !important;
-            font-family: 'Prompt', sans-serif !important;
-        }
+        /* Swal Custom */
+        .brutal-swal { border: 2px solid black !important; border-radius: 0 !important; box-shadow: 4px 4px 0px black !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="top-nav">
-        <div id="user-info">ภัครีมา วังเมือง</div>
-        <button class="btn-logout" onclick="location.reload()">Logout</button>
+    <div class="header">
+        <span>ภัครีมา วังเมือง</span>
+        <button class="btn-logout">Logout</button>
     </div>
 
-    <div class="main-title">✦ DAILY WORKLOG ✦</div>
+    <div class="title">✦ DAILY WORKLOG ✦</div>
 
     <div class="card">
-        <div class="input-grid">
-            <div class="input-group">
-                <label>วันที่</label>
-                <input type="text" value="25 เม.ย. 2569">
-            </div>
-            <div class="input-group">
-                <label>เวลาเข้า</label>
-                <input type="time">
-            </div>
-            <div class="input-group">
-                <label>เวลาออก</label>
-                <input type="time">
-            </div>
-            <div class="input-group">
-                <label>พัก (ชม.)</label>
-                <input type="number" value="1">
-            </div>
-            
-            <div class="input-group">
+        <div class="form-grid">
+            <div class="field"><label>วันที่</label><input type="date" id="dateInput"></div>
+            <div class="field"><label>เวลาเข้า</label><input type="time" id="timeIn"></div>
+            <div class="field"><label>เวลาออก</label><input type="time" id="timeOut"></div>
+            <div class="field"><label>พัก (ชม.)</label><input type="number" id="break" value="1"></div>
+            <div class="field">
                 <label>OT (2 แรง)</label>
-                <div class="toggle-wrapper">
-                    <input type="checkbox" id="ot-toggle">
-                    <label for="ot-toggle" class="choice-yes">Yes</label>
-                    <label for="ot-toggle" class="choice-no">No</label>
+                <div class="toggle-group">
+                    <input type="checkbox" id="ot">
+                    <label for="ot" class="label-yes">Yes</label>
+                    <label for="ot" class="label-no">No</label>
                 </div>
             </div>
-
-            <div class="input-group">
+            <div class="field">
                 <label>ปิดร้าน (40.-)</label>
-                <div class="toggle-wrapper">
-                    <input type="checkbox" id="close-toggle">
-                    <label for="close-toggle" class="choice-yes">Yes</label>
-                    <label for="close-toggle" class="choice-no">No</label>
+                <div class="toggle-group">
+                    <input type="checkbox" id="closeShop">
+                    <label for="closeShop" class="label-yes">Yes</label>
+                    <label for="closeShop" class="label-no">No</label>
                 </div>
             </div>
         </div>
-        <button class="btn-save" onclick="alertSuccess('เย้! บันทึกสำเร็จแล้ว')">บันทึกข้อมูลวันนี้</button>
+        <button class="btn-save" onclick="saveWork()">บันทึกข้อมูลวันนี้</button>
     </div>
 
     <div class="card">
-        <div class="filter-area">
-            <select><option>เมษายน</option></select>
-            <select><option>2026</option></select>
+        <div style="display:flex; justify-content:center; gap:10px; margin-bottom:15px;">
+            <select style="width:100px;"><option>เมษายน</option></select>
+            <select style="width:80px;"><option>2026</option></select>
         </div>
-
         <table>
             <thead>
-                <tr>
-                    <th>วันที่</th>
-                    <th>เวลา</th>
-                    <th>ชม.</th>
-                    <th>OT</th>
-                    <th>ปิดร้าน</th>
-                    <th>รายได้</th>
-                    <th>จัดการ</th>
-                </tr>
+                <tr><th>วันที่</th><th>เวลา</th><th>ชม.</th><th>OT</th><th>ปิดร้าน</th><th>รายได้</th><th>จัดการ</th></tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>25/04</td>
-                    <td>17:13-20:13</td>
-                    <td>2.00</td>
-                    <td>○</td>
-                    <td>-</td>
-                    <td><strong>฿120</strong></td>
-                    <td>
-                        <button class="btn-action" onclick="alertSuccess('อัปเดตเรียบร้อย!')">✎</button>
-                        <button class="btn-action" onclick="confirmDelete()">🗑</button>
-                    </td>
-                </tr>
-            </tbody>
+            <tbody id="logTable">
+                </tbody>
         </table>
-
         <div class="summary-box">
-            <div class="summary-details">
-                <span>งาน ฿120</span>
-                <span>ปิดร้าน ฿0</span>
-                <span>ภาษี 5% -฿6</span>
+            <div style="display:flex; justify-content:space-around; font-size:11px; color:#666;">
+                <span id="sumWork">งาน ฿0</span>
+                <span id="sumClose">ปิดร้าน ฿0</span>
+                <span id="sumTax">ภาษี 5% -฿0</span>
             </div>
-            <div class="total-pay">รวมสุทธิ ฿114</div>
+            <div class="summary-total" id="netTotal">รวมสุทธิ ฿0</div>
         </div>
     </div>
 </div>
 
 <script>
-    // ฟังก์ชันแจ้งเตือน Toast (มุมขวาบน)
-    function alertSuccess(msg) {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2500,
-            customClass: { popup: 'brutal-popup' }
-        });
-        Toast.fire({ icon: 'success', title: msg });
+    let workLogs = [];
+
+    function saveWork() {
+        const date = document.getElementById('dateInput').value;
+        const tin = document.getElementById('timeIn').value;
+        const tout = document.getElementById('timeOut').value;
+        const brk = parseFloat(document.getElementById('break').value) || 0;
+        const isOt = document.getElementById('ot').checked;
+        const isClose = document.getElementById('closeShop').checked;
+
+        if(!date || !tin || !tout) return Swal.fire({title: 'กรอกข้อมูลไม่ครบ!', icon: 'error', customClass: {popup: 'brutal-swal'}});
+
+        // คำนวณชั่วโมง
+        const start = new Date(`2026-01-01T${tin}`);
+        const end = new Date(`2026-01-01T${tout}`);
+        let hours = (end - start) / (1000 * 60 * 60) - brk;
+        if(hours < 0) hours = 0;
+
+        const rate = 60; // สมมติค่าแรงชม.ละ 60
+        let income = hours * rate;
+        if(isOt) income *= 2;
+        const closeExtra = isClose ? 40 : 0;
+
+        const newEntry = {
+            id: Date.now(),
+            date: date.split('-').reverse().slice(0,2).join('/'),
+            time: `${tin}-${tout}`,
+            hrs: hours.toFixed(2),
+            ot: isOt ? '○' : '-',
+            close: isClose ? '40' : '-',
+            total: income + closeExtra,
+            rawIncome: income,
+            rawClose: closeExtra
+        };
+
+        workLogs.push(newEntry);
+        updateUI();
+        showToast('เย้! บันทึกสำเร็จแล้ว');
     }
 
-    // ฟังก์ชันยืนยันการลบ (Modal กลางจอ)
-    function confirmDelete() {
+    function updateUI() {
+        const tbody = document.getElementById('logTable');
+        tbody.innerHTML = '';
+        let totalIncome = 0;
+        let totalClose = 0;
+
+        workLogs.forEach(item => {
+            totalIncome += item.rawIncome;
+            totalClose += item.rawClose;
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item.date}</td><td>${item.time}</td><td>${item.hrs}</td>
+                    <td>${item.ot}</td><td>${item.close}</td><td><b>฿${item.total}</b></td>
+                    <td>
+                        <button class="btn-action">✎</button>
+                        <button class="btn-action" onclick="deleteEntry(${item.id})">🗑</button>
+                    </td>
+                </tr>`;
+        });
+
+        const tax = (totalIncome + totalClose) * 0.05;
+        document.getElementById('sumWork').innerText = `งาน ฿${totalIncome}`;
+        document.getElementById('sumClose').innerText = `ปิดร้าน ฿${totalClose}`;
+        document.getElementById('sumTax').innerText = `ภาษี 5% -฿${tax.toFixed(0)}`;
+        document.getElementById('netTotal').innerText = `รวมสุทธิ ฿${(totalIncome + totalClose - tax).toFixed(0)}`;
+    }
+
+    function deleteEntry(id) {
         Swal.fire({
             title: 'จะลบจริงๆ หรอ?',
             text: "ลบแล้วกู้คืนไม่ได้น้า!",
@@ -324,14 +220,23 @@
             confirmButtonColor: '#000',
             confirmButtonText: 'ลบเลย',
             cancelButtonText: 'ยกเลิก',
-            customClass: { popup: 'brutal-popup' }
+            customClass: {popup: 'brutal-swal'}
         }).then((result) => {
             if (result.isConfirmed) {
-                alertSuccess('ลบข้อมูลแล้วจ้า');
+                workLogs = workLogs.filter(i => i.id !== id);
+                updateUI();
+                showToast('ลบข้อมูลแล้วจ้า');
             }
         });
     }
-</script>
 
+    function showToast(msg) {
+        const Toast = Swal.mixin({
+            toast: true, position: 'top-end', showConfirmButton: false, timer: 2000,
+            customClass: {popup: 'brutal-swal'}
+        });
+        Toast.fire({ icon: 'success', title: msg });
+    }
+</script>
 </body>
 </html>
