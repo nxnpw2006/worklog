@@ -3,32 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worklog - Neubrutalism Edition</title>
+    <title>Daily Worklog - Full System</title>
+    
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
 
+    <style>
         :root {
             --black: #000000;
             --white: #ffffff;
-            --summary-bg: #fdfdf5; /* สีเหลืองนวลตามรูป */
-            --border-thick: 2px;
+            --cream: #fdfdf5;
+            --border-width: 2px;
+            --shadow: 5px 5px 0px var(--black);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--white);
             font-family: 'Prompt', sans-serif;
-            display: flex;
-            justify-content: center;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
             color: var(--black);
         }
 
-        .container { width: 100%; max-width: 550px; }
+        .container { width: 100%; max-width: 500px; }
 
-        /* ส่วนหัว */
-        .user-nav {
+        /* --- Header & User Section --- */
+        .top-nav {
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -36,32 +41,36 @@
             margin-bottom: 15px;
         }
 
+        #user-info { font-size: 13px; font-weight: 400; }
+
         .btn-logout {
             background: var(--white);
             border: 1.5px solid var(--black);
-            padding: 3px 12px;
+            padding: 4px 12px;
             cursor: pointer;
-            font-size: 13px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
         }
 
-        .header-title {
+        .main-title {
             text-align: center;
             font-weight: 600;
             font-size: 18px;
             letter-spacing: 2px;
-            margin-bottom: 25px;
+            margin: 20px 0 30px 0;
         }
 
-        /* Card Component */
+        /* --- Card Design --- */
         .card {
-            border: var(--border-thick) solid var(--black);
-            box-shadow: 5px 5px 0px var(--black); /* เงาคมชัดสไตล์ Neubrutalism */
+            border: var(--border-width) solid var(--black);
+            box-shadow: var(--shadow);
             padding: 25px;
             margin-bottom: 35px;
             background: var(--white);
         }
 
-        /* Input Grid */
+        /* --- Grid System --- */
         .input-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -79,24 +88,24 @@
         input:not([type="checkbox"]), select {
             width: 100%;
             padding: 10px;
-            border: var(--border-thick) solid var(--black);
+            border: var(--border-width) solid var(--black);
             font-family: inherit;
             font-size: 13px;
-            box-sizing: border-box;
             outline: none;
         }
 
-        /* --- จุดที่ปรับปรุง: ปุ่ม Yes/No สไตล์สลับสี --- */
-        .toggle-box {
+        /* --- Toggle Buttons (OT & ปิดร้าน) --- */
+        .toggle-wrapper {
             display: flex;
             border: var(--border-thick) solid var(--black);
             height: 40px;
             overflow: hidden;
+            border: 2px solid black;
         }
 
-        .toggle-box input { display: none; }
+        .toggle-wrapper input { display: none; }
 
-        .toggle-box label {
+        .toggle-wrapper label {
             flex: 1;
             display: flex;
             align-items: center;
@@ -106,15 +115,15 @@
             transition: 0.1s;
         }
 
-        /* สถานะเริ่มต้น: No เป็นสีดำ, Yes เป็นสีขาว */
-        .lab-yes { background: var(--white); color: var(--black); border-right: 1px solid var(--black); }
-        .lab-no { background: var(--black); color: var(--white); }
+        /* สถานะ Default: No ดำ / Yes ขาว */
+        .choice-yes { background: var(--white); color: var(--black); border-right: 1px solid black; }
+        .choice-no { background: var(--black); color: var(--white); }
 
-        /* เมื่อติ๊ก (Checked): Yes กลายเป็นสีดำ, No กลายเป็นสีขาว */
-        input:checked + .lab-yes { background: var(--black); color: var(--white); }
-        input:checked ~ .lab-no { background: var(--white); color: var(--black); }
+        /* เมื่อกดเลือก: สลับสี */
+        input:checked + .choice-yes { background: var(--black); color: var(--white); }
+        input:checked ~ .choice-no { background: var(--white); color: var(--black); }
 
-        /* ปุ่มบันทึกสีดำสนิท */
+        /* --- Save Button --- */
         .btn-save {
             width: 100%;
             background: var(--black);
@@ -124,57 +133,75 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
+            margin-top: 5px;
             font-family: inherit;
         }
 
-        /* Table & Action Buttons */
+        /* --- Table Section --- */
+        .filter-area {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .filter-area select { width: auto; min-width: 110px; text-align: center; }
+
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            margin-top: 15px;
+            margin-bottom: 20px;
         }
 
-        th { border-bottom: 1.5px solid var(--black); padding-bottom: 12px; }
-        td { padding: 18px 5px; text-align: center; }
+        thead th {
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--black);
+            font-weight: 600;
+        }
 
-        .btn-icon {
+        tbody td {
+            padding: 18px 4px;
+            text-align: center;
+        }
+
+        /* --- Action Buttons (✎ / 🗑) --- */
+        .btn-action {
             background: var(--white);
             border: 1.5px solid var(--black);
-            width: 35px; /* ทรงสูงตามรูป */
+            width: 35px;
             height: 45px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             margin: 0 2px;
-            padding: 0;
         }
 
-        /* Summary Section */
-        .summary-card {
-            background-color: var(--summary-bg);
+        /* --- Summary Section --- */
+        .summary-box {
+            background-color: var(--cream);
             border: 1px solid #e0e0e0;
             padding: 30px 20px;
             text-align: center;
             margin-top: 10px;
         }
 
-        .summary-grid {
+        .summary-details {
             display: flex;
             justify-content: space-around;
             font-size: 12px;
             margin-bottom: 15px;
-            color: #555;
+            color: #444;
         }
 
-        .total-amount { font-size: 28px; font-weight: 600; }
+        .total-pay { font-size: 28px; font-weight: 600; }
 
-        /* Custom SweetAlert Style */
-        .swal2-popup-brutal {
-            border: 2.5px solid black !important;
+        /* --- SweetAlert Neubrutalism Style --- */
+        .brutal-popup {
+            border: 2px solid black !important;
             border-radius: 0px !important;
-            box-shadow: 5px 5px 0px black !important;
+            box-shadow: 4px 4px 0px black !important;
             font-family: 'Prompt', sans-serif !important;
         }
     </style>
@@ -182,12 +209,12 @@
 <body>
 
 <div class="container">
-    <div class="user-nav">
-        <div id="user">ภัครีมา วังเมือง</div>
-        <button class="btn-logout">Logout</button>
+    <div class="top-nav">
+        <div id="user-info">ภัครีมา วังเมือง</div>
+        <button class="btn-logout" onclick="location.reload()">Logout</button>
     </div>
 
-    <div class="header-title">✦ DAILY WORKLOG ✦</div>
+    <div class="main-title">✦ DAILY WORKLOG ✦</div>
 
     <div class="card">
         <div class="input-grid">
@@ -210,29 +237,29 @@
             
             <div class="input-group">
                 <label>OT (2 แรง)</label>
-                <div class="toggle-box">
-                    <input type="checkbox" id="ot">
-                    <label for="ot" class="lab-yes">Yes</label>
-                    <label for="ot" class="lab-no">No</label>
+                <div class="toggle-wrapper">
+                    <input type="checkbox" id="ot-toggle">
+                    <label for="ot-toggle" class="choice-yes">Yes</label>
+                    <label for="ot-toggle" class="choice-no">No</label>
                 </div>
             </div>
 
             <div class="input-group">
                 <label>ปิดร้าน (40.-)</label>
-                <div class="toggle-box">
-                    <input type="checkbox" id="close">
-                    <label for="close" class="lab-yes">Yes</label>
-                    <label for="close" class="lab-no">No</label>
+                <div class="toggle-wrapper">
+                    <input type="checkbox" id="close-toggle">
+                    <label for="close-toggle" class="choice-yes">Yes</label>
+                    <label for="close-toggle" class="choice-no">No</label>
                 </div>
             </div>
         </div>
-        <button class="btn-save" onclick="toastAlert('เย้! บันทึกสำเร็จแล้ว')">บันทึกข้อมูลวันนี้</button>
+        <button class="btn-save" onclick="alertSuccess('เย้! บันทึกสำเร็จแล้ว')">บันทึกข้อมูลวันนี้</button>
     </div>
 
     <div class="card">
-        <div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px;">
-            <select style="width:120px;"><option>เมษายน</option></select>
-            <select style="width:120px;"><option>2026</option></select>
+        <div class="filter-area">
+            <select><option>เมษายน</option></select>
+            <select><option>2026</option></select>
         </div>
 
         <table>
@@ -256,38 +283,38 @@
                     <td>-</td>
                     <td><strong>฿120</strong></td>
                     <td>
-                        <button class="btn-icon" onclick="toastAlert('อัปเดตเรียบร้อย!')">✎</button>
-                        <button class="btn-icon" onclick="confirmDelete()">🗑</button>
+                        <button class="btn-action" onclick="alertSuccess('อัปเดตเรียบร้อย!')">✎</button>
+                        <button class="btn-action" onclick="confirmDelete()">🗑</button>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="summary-card">
-            <div class="summary-grid">
+        <div class="summary-box">
+            <div class="summary-details">
                 <span>งาน ฿120</span>
                 <span>ปิดร้าน ฿0</span>
                 <span>ภาษี 5% -฿6</span>
             </div>
-            <div class="total-amount">รวมสุทธิ ฿114</div>
+            <div class="total-pay">รวมสุทธิ ฿114</div>
         </div>
     </div>
 </div>
 
 <script>
-    // แจ้งเตือนแบบ Toast (มุมขวาบน)
-    function toastAlert(message) {
+    // ฟังก์ชันแจ้งเตือน Toast (มุมขวาบน)
+    function alertSuccess(msg) {
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,
-            customClass: { popup: 'swal2-popup-brutal' }
+            timer: 2500,
+            customClass: { popup: 'brutal-popup' }
         });
-        Toast.fire({ icon: 'success', title: message });
+        Toast.fire({ icon: 'success', title: msg });
     }
 
-    // แจ้งเตือนยืนยันการลบ (กลางจอ)
+    // ฟังก์ชันยืนยันการลบ (Modal กลางจอ)
     function confirmDelete() {
         Swal.fire({
             title: 'จะลบจริงๆ หรอ?',
@@ -297,10 +324,10 @@
             confirmButtonColor: '#000',
             confirmButtonText: 'ลบเลย',
             cancelButtonText: 'ยกเลิก',
-            customClass: { popup: 'swal2-popup-brutal' }
+            customClass: { popup: 'brutal-popup' }
         }).then((result) => {
             if (result.isConfirmed) {
-                toastAlert('ลบข้อมูลแล้วจ้า');
+                alertSuccess('ลบข้อมูลแล้วจ้า');
             }
         });
     }
