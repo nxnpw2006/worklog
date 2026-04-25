@@ -8,7 +8,6 @@ function calc(inTime, outTime, breakHr, ot, close) {
   if (diff < 0) diff += 24;
 
   let hours = diff - breakHr;
-
   let income = hours * (ot ? RATE * 2 : RATE);
   let closePay = close ? 40 : 0;
 
