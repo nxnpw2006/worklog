@@ -3,165 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worklog - Neubrutalism</title>
+    <title>Worklog - Neubrutalism Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
 
         :root {
             --black: #000000;
             --white: #ffffff;
-            --gray-light: #f0f0f0;
-            --summary-bg: #f9f9ec;
-            --border: 1.5px solid var(--black);
+            --summary-bg: #fdfdf5; /* สีเหลืองครีมตามรูป */
+            --border-width: 2px;
+            --shadow-main: 4px 4px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--white);
             font-family: 'Prompt', sans-serif;
-            display: flex;
-            justify-content: center;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
             color: var(--black);
         }
 
         .container {
             width: 100%;
-            max-width: 550px;
-            position: relative;
+            max-width: 500px;
         }
 
-        /* ส่วนชื่อผู้ใช้และ Logout */
+        /* Top Navigation (User & Logout) */
         .user-nav {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 12px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         #user {
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 400;
         }
 
         .btn-logout {
             background: none;
             border: 1px solid var(--black);
-            padding: 2px 8px;
+            padding: 3px 10px;
             cursor: pointer;
             font-family: inherit;
             font-size: 11px;
-            transition: 0.2s;
+            font-weight: 600;
         }
 
-        .btn-logout:hover {
-            background: var(--black);
-            color: var(--white);
-        }
-
-        /* Header */
-        .header {
+        /* Header Title */
+        .header-title {
             text-align: center;
             font-weight: 600;
-            letter-spacing: 1px;
+            font-size: 18px;
+            letter-spacing: 2px;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            font-size: 16px;
         }
 
-        /* Card Style */
+        /* Card Component */
         .card {
-            border: var(--border);
-            box-shadow: 4px 4px 0px var(--black);
-            padding: 20px;
-            margin-bottom: 25px;
+            border: var(--border-width) solid var(--black);
+            box-shadow: var(--shadow-main);
+            padding: 25px 20px;
+            margin-bottom: 30px;
             background: var(--white);
         }
 
+        /* Grid System */
         .input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        label {
+        .input-group label {
             display: block;
             font-size: 11px;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         input:not([type="checkbox"]), select {
             width: 100%;
             padding: 10px;
-            border: var(--border);
-            box-sizing: border-box;
+            border: var(--border-width) solid var(--black);
             font-family: inherit;
             font-size: 13px;
             outline: none;
         }
 
-        /* Toggle สลับสี Yes/No */
-        .toggle-group {
+        /* Custom Toggle Switch (Yes/No) */
+        .toggle-box {
             display: flex;
-            border: var(--border);
-            height: 38px;
+            border: var(--border-width) solid var(--black);
+            height: 40px;
             overflow: hidden;
         }
 
-        .toggle-group input { display: none; }
+        .toggle-box input { display: none; }
 
-        .toggle-group label {
+        .toggle-box label {
             flex: 1;
-            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             font-size: 11px;
+            cursor: pointer;
             transition: 0.1s;
         }
 
-        /* ค่าเริ่มต้น: No เป็นสีดำ, Yes เป็นสีขาว */
+        /* Default: No is Black, Yes is White */
         .label-yes { background: var(--white); color: var(--black); }
         .label-no { background: var(--black); color: var(--white); }
 
-        /* เมื่อถูกติ๊ก (Checked): Yes เป็นสีดำ, No เป็นสีขาว */
+        /* Checked state: Yes becomes Black, No becomes White */
         input:checked + .label-yes { background: var(--black); color: var(--white); }
         input:checked ~ .label-no { background: var(--white); color: var(--black); }
 
-        /* Button Save */
+        /* Save Button */
         .btn-save {
             width: 100%;
             background: var(--black);
             color: var(--white);
             border: none;
-            padding: 12px;
+            padding: 14px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.1s;
+            margin-top: 5px;
         }
 
-        .btn-save:active {
-            transform: scale(0.98);
-        }
-
-        /* Table Section */
+        /* Filter Row */
         .filter-row {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
-        .filter-row select { width: 100px; text-align: center; }
+        .filter-row select {
+            width: auto;
+            min-width: 110px;
+            text-align: center;
+        }
 
+        /* Table Styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -170,56 +168,76 @@
         }
 
         thead th {
-            padding: 10px 5px;
+            padding-bottom: 12px;
             border-bottom: 1.5px solid var(--black);
             font-weight: 600;
+            color: var(--black);
         }
 
         tbody td {
-            padding: 15px 5px;
+            padding: 18px 4px;
             text-align: center;
-            color: #444;
+            color: #333;
         }
 
-        .btn-action {
-            border: 1px solid var(--black);
-            background: white;
-            padding: 4px 6px;
+        /* Action Buttons (Edit/Delete) */
+        .action-group {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-icon {
+            background: var(--white);
+            border: 1.5px solid var(--black);
+            width: 32px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            margin: 0 2px;
-            font-size: 12px;
+            padding: 0;
+        }
+
+        .btn-icon svg {
+            width: 18px;
+            height: 18px;
         }
 
         /* Summary Box */
         .summary-card {
             background-color: var(--summary-bg);
-            border: 1px solid #e0e0e0;
-            padding: 20px;
+            border: 1px solid #e5e5e5;
+            padding: 25px;
             text-align: center;
+            margin-top: 10px;
         }
 
-        .summary-details {
+        .summary-grid {
             display: flex;
             justify-content: space-around;
             font-size: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            color: #444;
         }
 
-        .total-text {
-            font-size: 24px;
+        .total-amount {
+            font-size: 26px;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
+
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="user-nav">
-        <div id="user"></div>
-        <button onclick="logout()">Logout</button>
+        <div id="user">User: Admin</div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 
-    <div class="header">✦ DAILY WORKLOG ✦</div>
+    <div class="header-title">✦ DAILY WORKLOG ✦</div>
 
     <div class="card">
         <div class="input-grid">
@@ -241,7 +259,7 @@
             </div>
             <div class="input-group">
                 <label>OT (2 แรง)</label>
-                <div class="toggle-group">
+                <div class="toggle-box">
                     <input type="checkbox" id="ot">
                     <label for="ot" class="label-yes">Yes</label>
                     <label for="ot" class="label-no">No</label>
@@ -249,7 +267,7 @@
             </div>
             <div class="input-group">
                 <label>ปิดร้าน (40.-)</label>
-                <div class="toggle-group">
+                <div class="toggle-box">
                     <input type="checkbox" id="close">
                     <label for="close" class="label-yes">Yes</label>
                     <label for="close" class="label-no">No</label>
@@ -261,8 +279,12 @@
 
     <div class="card">
         <div class="filter-row">
-            <select id="month-select"><option>เมษายน</option></select>
-            <select id="year-select"><option>2026</option></select>
+            <select id="month-select">
+                <option>เมษายน</option>
+            </select>
+            <select id="year-select">
+                <option>2026</option>
+            </select>
         </div>
 
         <table>
@@ -277,32 +299,48 @@
                     <th>จัดการ</th>
                 </tr>
             </thead>
-            <tbody id="table-body">
+            <tbody id="table">
                 <tr>
                     <td>25/04</td>
                     <td>17:13-20:13</td>
                     <td>2.00</td>
                     <td>○</td>
                     <td>-</td>
-                    <td><b>฿120</b></td>
+                    <td><strong>฿120</strong></td>
                     <td>
-                        <button class="btn-action">✎</button>
-                        <button class="btn-action">🗑</button>
+                        <div class="action-group">
+                            <button class="btn-icon" onclick="edit()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <button class="btn-icon" onclick="remove()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
         <div class="summary-card">
-            <div class="summary-details">
-                <span id="sum-work">งาน ฿0</span>
-                <span id="sum-close">ปิดร้าน ฿0</span>
-                <span id="sum-tax">ภาษี 5% -฿0</span>
+            <div class="summary-grid">
+                <span>งาน ฿0</span>
+                <span>ปิดร้าน ฿0</span>
+                <span>ภาษี 5% -฿0</span>
             </div>
-            <div class="total-text" id="sum-total">รวมสุทธิ ฿0</div>
+            <div class="total-amount">รวมสุทธิ ฿0</div>
         </div>
     </div>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
