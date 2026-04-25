@@ -1,6 +1,4 @@
 async function save() {
-  if (!currentUser) return alert("login ก่อน");
-
   const date = document.getElementById("date").value;
   const inTime = document.getElementById("in").value;
   const outTime = document.getElementById("out").value;
@@ -22,5 +20,4 @@ async function save() {
 async function loadData() {
   const data = await getEntries();
   renderTable(data);
-  drawChart(data);
 }
