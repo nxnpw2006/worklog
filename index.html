@@ -28,6 +28,36 @@
         .container {
             width: 100%;
             max-width: 550px;
+            position: relative;
+        }
+
+        /* ส่วนชื่อผู้ใช้และ Logout */
+        .user-nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        #user {
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid var(--black);
+            padding: 2px 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 11px;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: var(--black);
+            color: var(--white);
         }
 
         /* Header */
@@ -35,11 +65,12 @@
             text-align: center;
             font-weight: 600;
             letter-spacing: 1px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            font-size: 16px;
         }
 
         /* Card Style */
@@ -72,9 +103,10 @@
             box-sizing: border-box;
             font-family: inherit;
             font-size: 13px;
+            outline: none;
         }
 
-        /* --- ปุ่มสไตล์ Yes / No (สลับขาวดำ) --- */
+        /* Toggle สลับสี Yes/No */
         .toggle-group {
             display: flex;
             border: var(--border);
@@ -92,18 +124,16 @@
             justify-content: center;
             cursor: pointer;
             font-size: 11px;
-            transition: 0.2s;
+            transition: 0.1s;
         }
 
-        /* ฝั่ง Yes */
+        /* ค่าเริ่มต้น: No เป็นสีดำ, Yes เป็นสีขาว */
         .label-yes { background: var(--white); color: var(--black); }
-        input:checked + .label-yes { background: var(--black); color: var(--white); }
-
-        /* ฝั่ง No */
         .label-no { background: var(--black); color: var(--white); }
+
+        /* เมื่อถูกติ๊ก (Checked): Yes เป็นสีดำ, No เป็นสีขาว */
+        input:checked + .label-yes { background: var(--black); color: var(--white); }
         input:checked ~ .label-no { background: var(--white); color: var(--black); }
-        /* กรณีปกติที่ไม่ได้เช็ค ให้ No เป็นสีดำ */
-        input:not(:checked) ~ .label-no { background: var(--black); color: var(--white); }
 
         /* Button Save */
         .btn-save {
@@ -116,6 +146,11 @@
             font-size: 14px;
             cursor: pointer;
             margin-top: 10px;
+            transition: transform 0.1s;
+        }
+
+        .btn-save:active {
+            transform: scale(0.98);
         }
 
         /* Table Section */
@@ -149,15 +184,16 @@
         .btn-action {
             border: 1px solid var(--black);
             background: white;
-            padding: 5px;
+            padding: 4px 6px;
             cursor: pointer;
             margin: 0 2px;
+            font-size: 12px;
         }
 
         /* Summary Box */
         .summary-card {
             background-color: var(--summary-bg);
-            border: 1.5px solid #e0e0e0;
+            border: 1px solid #e0e0e0;
             padding: 20px;
             text-align: center;
         }
@@ -178,13 +214,18 @@
 <body>
 
 <div class="container">
+    <div class="user-nav">
+        <div id="user">Loading...</div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+
     <div class="header">✦ DAILY WORKLOG ✦</div>
 
     <div class="card">
         <div class="input-grid">
             <div class="input-group">
                 <label>วันที่</label>
-                <input type="text" value="25 เม.ย. 2569">
+                <input type="date" id="date">
             </div>
             <div class="input-group">
                 <label>เวลาเข้า</label>
@@ -220,8 +261,8 @@
 
     <div class="card">
         <div class="filter-row">
-            <select><option>เมษายน</option></select>
-            <select><option>2026</option></select>
+            <select id="month-select"><option>เมษายน</option></select>
+            <select id="year-select"><option>2026</option></select>
         </div>
 
         <table>
@@ -236,7 +277,7 @@
                     <th>จัดการ</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="table-body">
                 <tr>
                     <td>25/04</td>
                     <td>17:13-20:13</td>
@@ -254,11 +295,11 @@
 
         <div class="summary-card">
             <div class="summary-details">
-                <span>งาน ฿120</span>
-                <span>ปิดร้าน ฿0</span>
-                <span>ภาษี 5% -฿6</span>
+                <span id="sum-work">งาน ฿0</span>
+                <span id="sum-close">ปิดร้าน ฿0</span>
+                <span id="sum-tax">ภาษี 5% -฿0</span>
             </div>
-            <div class="total-text">รวมสุทธิ ฿114</div>
+            <div class="total-text" id="sum-total">รวมสุทธิ ฿0</div>
         </div>
     </div>
 </div>
