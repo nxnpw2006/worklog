@@ -1,30 +1,32 @@
 let currentUser = null;
 
+// Login
 function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
+  auth.signInWithPopup(provider)
+    .then(() => {
+      window.location = "index.html";
+    })
+    .catch(err => alert(err.message));
 }
 
+// Logout
 function logout() {
   auth.signOut();
 }
 
+// Check login
 auth.onAuthStateChanged(user => {
   if (user) {
     currentUser = user;
 
-    if (location.pathname.includes("login.html")) {
-      location.href = "index.html";
+    if (document.getElementById("user")) {
+      document.getElementById("user").innerText = user.displayName;
+      loadData();
     }
-
-    document.getElementById("userBox").innerHTML =
-      `${user.displayName}`;
-
-    loadData();
-
   } else {
-    if (!location.pathname.includes("login.html")) {
-      location.href = "login.html";
+    if (location.pathname.includes("index.html")) {
+      window.location = "login.html";
     }
   }
 });
