@@ -3,207 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worklog - Neubrutalism Style</title>
+    <title>Worklog - Neubrutalism</title>
     <style>
-        /* --- CSS ส่วนการตกแต่ง --- */
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
+
         :root {
             --black: #000000;
             --white: #ffffff;
-            --bg-color: #ffffff;
-            --card-bg: #ffffff;
-            --summary-bg: #fdfdf5; /* สีเหลืองครีมนิดๆ ตามรูป */
-            --border-thick: 2px;
-            --shadow-dist: 4px;
+            --gray-light: #f0f0f0;
+            --summary-bg: #f9f9ec;
+            --border: 1.5px solid var(--black);
         }
 
         body {
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--white);
+            font-family: 'Prompt', sans-serif;
             display: flex;
             justify-content: center;
-            padding: 20px;
             margin: 0;
+            padding: 20px;
             color: var(--black);
         }
 
-        .main-container {
+        .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
         }
 
-        .header-section {
+        /* Header */
+        .header {
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            justify-content: center;
+            gap: 10px;
         }
 
-        h2 {
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        .btn-logout {
-            background: none;
-            border: 1px solid var(--black);
-            padding: 4px 10px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        /* สไตล์การ์ดหลัก */
+        /* Card Style */
         .card {
-            background: var(--card-bg);
-            border: var(--border-thick) solid var(--black);
-            box-shadow: var(--shadow-dist) var(--shadow-dist) 0px var(--black);
+            border: var(--border);
+            box-shadow: 4px 4px 0px var(--black);
             padding: 20px;
             margin-bottom: 25px;
-            border-radius: 2px;
+            background: var(--white);
         }
 
-        /* การจัดแถว Input */
         .input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .input-group label {
+        label {
             display: block;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        input[type="date"], 
-        input[type="time"], 
-        input[type="number"],
-        select {
+        input:not([type="checkbox"]), select {
             width: 100%;
-            padding: 8px;
-            border: var(--border-thick) solid var(--black);
-            font-family: inherit;
-            outline: none;
+            padding: 10px;
+            border: var(--border);
             box-sizing: border-box;
+            font-family: inherit;
+            font-size: 13px;
         }
 
-        /* Custom Toggle สำหรับ OT และ ปิดร้าน */
-        .toggle-container {
+        /* --- ปุ่มสไตล์ Yes / No (สลับขาวดำ) --- */
+        .toggle-group {
             display: flex;
-            border: var(--border-thick) solid var(--black);
-            width: 100%;
-            height: 35px;
-            position: relative;
-            background: var(--black);
+            border: var(--border);
+            height: 38px;
+            overflow: hidden;
         }
 
-        .toggle-container input {
-            display: none;
-        }
+        .toggle-group input { display: none; }
 
-        .toggle-label {
+        .toggle-group label {
             flex: 1;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
             cursor: pointer;
-            background: var(--white);
-            color: var(--black);
-            z-index: 1;
+            font-size: 11px;
             transition: 0.2s;
         }
 
-        /* เมื่อเลือก Yes หรือ No ให้สลับสีดำ */
-        #ot:not(:checked) ~ .label-no,
-        #ot:checked ~ .label-yes,
-        #close:not(:checked) ~ .label-no,
-        #close:checked ~ .label-yes {
-            background: var(--black);
-            color: var(--white);
-        }
+        /* ฝั่ง Yes */
+        .label-yes { background: var(--white); color: var(--black); }
+        input:checked + .label-yes { background: var(--black); color: var(--white); }
 
-        /* ปุ่มบันทึก */
+        /* ฝั่ง No */
+        .label-no { background: var(--black); color: var(--white); }
+        input:checked ~ .label-no { background: var(--white); color: var(--black); }
+        /* กรณีปกติที่ไม่ได้เช็ค ให้ No เป็นสีดำ */
+        input:not(:checked) ~ .label-no { background: var(--black); color: var(--white); }
+
+        /* Button Save */
         .btn-save {
             width: 100%;
             background: var(--black);
             color: var(--white);
-            padding: 12px;
             border: none;
-            font-weight: bold;
+            padding: 12px;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
             margin-top: 10px;
         }
 
-        .btn-save:hover {
-            opacity: 0.9;
-        }
-
-        /* ส่วนตัวกรอง เดือน/ปี */
+        /* Table Section */
         .filter-row {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
         }
+        .filter-row select { width: 100px; text-align: center; }
 
-        .filter-row select {
-            width: auto;
-            min-width: 100px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 20px;
         }
 
-        /* ส่วนแสดงผลตาราง (จำลอง) */
-        #table {
-            min-height: 50px;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 15px;
+        thead th {
+            padding: 10px 5px;
+            border-bottom: 1.5px solid var(--black);
+            font-weight: 600;
         }
 
-        /* สรุปผลด้านล่าง */
-        .summary-box {
+        tbody td {
+            padding: 15px 5px;
+            text-align: center;
+            color: #444;
+        }
+
+        .btn-action {
+            border: 1px solid var(--black);
+            background: white;
+            padding: 5px;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        /* Summary Box */
+        .summary-card {
             background-color: var(--summary-bg);
-            border: 1px solid #e0e0e0;
+            border: 1.5px solid #e0e0e0;
             padding: 20px;
             text-align: center;
         }
 
-        .summary-grid {
+        .summary-details {
             display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 15px;
-            color: #555;
+            justify-content: space-around;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
 
-        .total-amount {
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #ccc;
-            margin: 20px 0;
+        .total-text {
+            font-size: 24px;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div class="header-section">
-        <h2>DAILY WORKLOG</h2>
-        <button class="btn-logout" onclick="logout()">Logout</button>
-    </div>
+<div class="container">
+    <div class="header">✦ DAILY WORKLOG ✦</div>
 
     <div class="card">
         <div class="input-grid">
             <div class="input-group">
                 <label>วันที่</label>
-                <input type="date" id="date">
+                <input type="text" value="25 เม.ย. 2569">
             </div>
             <div class="input-group">
                 <label>เวลาเข้า</label>
@@ -219,18 +200,18 @@
             </div>
             <div class="input-group">
                 <label>OT (2 แรง)</label>
-                <div class="toggle-container">
+                <div class="toggle-group">
                     <input type="checkbox" id="ot">
-                    <label for="ot" class="toggle-label label-yes">Yes</label>
-                    <label for="ot" class="toggle-label label-no">No</label>
+                    <label for="ot" class="label-yes">Yes</label>
+                    <label for="ot" class="label-no">No</label>
                 </div>
             </div>
             <div class="input-group">
                 <label>ปิดร้าน (40.-)</label>
-                <div class="toggle-container">
+                <div class="toggle-group">
                     <input type="checkbox" id="close">
-                    <label for="close" class="toggle-label label-yes">Yes</label>
-                    <label for="close" class="toggle-label label-no">No</label>
+                    <label for="close" class="label-yes">Yes</label>
+                    <label for="close" class="label-no">No</label>
                 </div>
             </div>
         </div>
@@ -239,39 +220,48 @@
 
     <div class="card">
         <div class="filter-row">
-            <select id="month-select">
-                <option>เมษายน</option>
-            </select>
-            <select id="year-select">
-                <option>2026</option>
-            </select>
-        </div>
-        
-        <div id="table">
-            <div style="text-align: center; color: #999; font-size: 12px; padding: 10px;">วันที่ | เวลา | ชม. | OT | ปิดร้าน | รายได้ | จัดการ</div>
+            <select><option>เมษายน</option></select>
+            <select><option>2026</option></select>
         </div>
 
-        <div class="summary-box">
-             <div class="summary-grid">
-                <span>งาน ฿0</span>
+        <table>
+            <thead>
+                <tr>
+                    <th>วันที่</th>
+                    <th>เวลา</th>
+                    <th>ชม.</th>
+                    <th>OT</th>
+                    <th>ปิดร้าน</th>
+                    <th>รายได้</th>
+                    <th>จัดการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>25/04</td>
+                    <td>17:13-20:13</td>
+                    <td>2.00</td>
+                    <td>○</td>
+                    <td>-</td>
+                    <td><b>฿120</b></td>
+                    <td>
+                        <button class="btn-action">✎</button>
+                        <button class="btn-action">🗑</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="summary-card">
+            <div class="summary-details">
+                <span>งาน ฿120</span>
                 <span>ปิดร้าน ฿0</span>
-                <span>ภาษี 5% -฿0</span>
-             </div>
-             <div class="total-amount">รวมสุทธิ ฿0</div>
+                <span>ภาษี 5% -฿6</span>
+            </div>
+            <div class="total-text">รวมสุทธิ ฿114</div>
         </div>
     </div>
 </div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<script src="firebase-config.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/db.js"></script>
-<script src="js/calc.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/app.js"></script>
 
 </body>
 </html>
