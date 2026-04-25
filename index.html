@@ -1,21 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Worklog</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worklog - Neubrutalism Style</title>
+    <style>
+        /* --- CSS ส่วนการตกแต่ง --- */
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --summary-bg: #fdfdf5; /* สีเหลืองครีมนิดๆ ตามรูป */
+            --border-thick: 2px;
+            --shadow-dist: 4px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: var(--black);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid var(--black);
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* สไตล์การ์ดหลัก */
+        .card {
+            background: var(--card-bg);
+            border: var(--border-thick) solid var(--black);
+            box-shadow: var(--shadow-dist) var(--shadow-dist) 0px var(--black);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 2px;
+        }
+
+        /* การจัดแถว Input */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="date"], 
+        input[type="time"], 
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: var(--border-thick) solid var(--black);
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* Custom Toggle สำหรับ OT และ ปิดร้าน */
+        .toggle-container {
+            display: flex;
+            border: var(--border-thick) solid var(--black);
+            width: 100%;
+            height: 35px;
+            position: relative;
+            background: var(--black);
+        }
+
+        .toggle-container input {
+            display: none;
+        }
+
+        .toggle-label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            background: var(--white);
+            color: var(--black);
+            z-index: 1;
+            transition: 0.2s;
+        }
+
+        /* เมื่อเลือก Yes หรือ No ให้สลับสีดำ */
+        #ot:not(:checked) ~ .label-no,
+        #ot:checked ~ .label-yes,
+        #close:not(:checked) ~ .label-no,
+        #close:checked ~ .label-yes {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        /* ปุ่มบันทึก */
+        .btn-save {
+            width: 100%;
+            background: var(--black);
+            color: var(--white);
+            padding: 12px;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-save:hover {
+            opacity: 0.9;
+        }
+
+        /* ส่วนตัวกรอง เดือน/ปี */
+        .filter-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row select {
+            width: auto;
+            min-width: 100px;
+        }
+
+        /* ส่วนแสดงผลตาราง (จำลอง) */
+        #table {
+            min-height: 50px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        /* สรุปผลด้านล่าง */
+        .summary-box {
+            background-color: var(--summary-bg);
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .total-amount {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
 
 <div class="main-container">
     <div class="header-section">
         <h2>DAILY WORKLOG</h2>
-        <div id="user"></div>
         <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 
-    <div class="card input-section">
+    <div class="card">
         <div class="input-grid">
             <div class="input-group">
                 <label>วันที่</label>
@@ -35,30 +219,37 @@
             </div>
             <div class="input-group">
                 <label>OT (2 แรง)</label>
-                <div class="toggle-wrapper">
-                    <input type="checkbox" id="ot" hidden>
-                    <label for="ot" class="toggle-btn"></label>
+                <div class="toggle-container">
+                    <input type="checkbox" id="ot">
+                    <label for="ot" class="toggle-label label-yes">Yes</label>
+                    <label for="ot" class="toggle-label label-no">No</label>
                 </div>
             </div>
             <div class="input-group">
                 <label>ปิดร้าน (40.-)</label>
-                <div class="toggle-wrapper">
-                    <input type="checkbox" id="close" hidden>
-                    <label for="close" class="toggle-btn"></label>
+                <div class="toggle-container">
+                    <input type="checkbox" id="close">
+                    <label for="close" class="toggle-label label-yes">Yes</label>
+                    <label for="close" class="toggle-label label-no">No</label>
                 </div>
             </div>
         </div>
         <button class="btn-save" onclick="save()">บันทึกข้อมูลวันนี้</button>
     </div>
 
-    <div class="card table-section">
+    <div class="card">
         <div class="filter-row">
-            <select id="month-select"></select>
-            <select id="year-select"></select>
+            <select id="month-select">
+                <option>เมษายน</option>
+            </select>
+            <select id="year-select">
+                <option>2026</option>
+            </select>
         </div>
         
         <div id="table">
-            </div>
+            <div style="text-align: center; color: #999; font-size: 12px; padding: 10px;">วันที่ | เวลา | ชม. | OT | ปิดร้าน | รายได้ | จัดการ</div>
+        </div>
 
         <div class="summary-box">
              <div class="summary-grid">
@@ -70,6 +261,17 @@
         </div>
     </div>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
