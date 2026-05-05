@@ -12,13 +12,20 @@ async function saveEntry(data) {
 // ดึงข้อมูล
 async function getEntries() {
     const user = auth.currentUser;
-    if (!user) return [];
-    // ต้องมี .where และ .orderBy ที่ชื่อฟิลด์ตรงกับใน Index (uid และ date)
+    if (!user) {
+        console.log("No user found yet");
+        return [];
+    }
+
     const snapshot = await dbStore.collection("worklogs")
         .where("uid", "==", user.uid)
         .orderBy("date", "desc")
         .get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
 }
 
 // ฟังก์ชันลบข้อมูล
