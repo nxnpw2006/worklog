@@ -34,3 +34,9 @@ async function loadData() {
         console.error("LoadData Error:", error);
     }
 }
+// ในส่วนท้ายของไฟล์ app.js หรือใน DOMContentLoaded
+window.onload = () => {
+    renderTable([]); // แสดงตารางว่างๆ ทันที
+    // จากนั้นค่อยเรียกโหลดข้อมูลจริงจาก Firebase
+    loadData(); 
+};
