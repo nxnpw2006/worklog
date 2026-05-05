@@ -25,3 +25,19 @@ firebase.auth().onAuthStateChanged(user => {
         }
     }
 });
+auth.onAuthStateChanged(user => {
+    const userDiv = document.getElementById("user");
+    if (user) {
+        // ถ้าล็อกอินอยู่
+        if (userDiv) userDiv.innerText = user.displayName;
+        
+        // --- จุดสำคัญ: สั่งโหลดข้อมูลเก่าทันทีที่ยืนยันตัวตนสำเร็จ ---
+        console.log("User logged in, fetching data...");
+        loadData(); 
+    } else {
+        // ถ้าไม่ได้ล็อกอิน ให้เด้งไปหน้า login
+        if (!window.location.pathname.includes("login.html")) {
+            window.location = "login.html";
+        }
+    }
+});
