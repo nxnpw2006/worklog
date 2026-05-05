@@ -13,6 +13,7 @@ async function saveEntry(data) {
 async function getEntries() {
     const user = auth.currentUser;
     if (!user) return [];
+    // ต้องมี .where และ .orderBy ที่ชื่อฟิลด์ตรงกับใน Index (uid และ date)
     const snapshot = await dbStore.collection("worklogs")
         .where("uid", "==", user.uid)
         .orderBy("date", "desc")
