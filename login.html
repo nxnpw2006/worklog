@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
+<meta charset="UTF-8">
+<title>Login</title>
 </head>
-
 <body>
-
 <h2>Login</h2>
-<button onclick="loginWithGoogle()">Login with Google</button>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+<button onclick="login()">Login</button>
 
-<!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-<!-- App -->
 <script src="firebase-config.js"></script>
 <script src="js/auth.js"></script>
-
 </body>
 </html>
