@@ -1,32 +1,20 @@
-let currentUser = null;
-
-// Login
-function loginWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then(() => {
-      window.location = "index.html";
-    })
-    .catch(err => alert(err.message));
+function login(){
+ const email = document.getElementById('email').value;
+ const pass = document.getElementById('password').value;
+ firebase.auth().signInWithEmailAndPassword(email,pass)
+ .then(()=> location='index.html')
+ .catch(e=>alert(e.message));
 }
 
-// Logout
-function logout() {
-  auth.signOut();
+function logout(){
+ firebase.auth().signOut().then(()=>location='login.html');
 }
 
-// Check login
-auth.onAuthStateChanged(user => {
-  if (user) {
-    currentUser = user;
-
-    if (document.getElementById("user")) {
-      document.getElementById("user").innerText = user.displayName;
-      loadData();
-    }
-  } else {
-    if (location.pathname.includes("index.html")) {
-      window.location = "login.html";
-    }
-  }
+firebase.auth().onAuthStateChanged(user=>{
+ if(user){
+  const el=document.getElementById('user');
+  if(el) el.innerText = user.email;
+ }else{
+  if(location.pathname.includes('index.html')) location='login.html';
+ }
 });
