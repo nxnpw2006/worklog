@@ -1,16 +1,36 @@
-function save(){
- const date=document.getElementById('date').value;
- const timeIn=document.getElementById('in').value;
- const timeOut=document.getElementById('out').value;
- const breakHr=parseFloat(document.getElementById('break').value)||0;
- const ot=document.getElementById('ot').checked;
- const close=document.getElementById('close').checked;
+async function save() {
+    const date = document.getElementById("date").value;
+    const inTime = document.getElementById("in").value;
+    const outTime = document.getElementById("out").value;
+    const breakHr = parseFloat(document.getElementById("break").value) || 0;
+    const ot = document.getElementById("ot").checked;
+    const close = document.getElementById("close").checked;
 
- if(!date||!timeIn||!timeOut) return alert('กรอกข้อมูลให้ครบ');
+    if (!date || !inTime || !outTime) {
+        Swal.fire("กรุณากรอกข้อมูลให้ครบ", "", "warning");
+        return;
+    }
 
- const c=calc(timeIn,timeOut,breakHr,ot,close);
+    // เรียกฟังก์ชันคำนวณจาก calc.js
+    const c = calc(inTime, outTime, breakHr, ot, close);
 
- addData({date,timeIn,timeOut,breakHr,ot,close,...c});
+    try {
+        await saveEntry({ date, inTime, outTime, breakHr, ot, close, ...c });
+        Swal.fire("บันทึกสำเร็จ!", "", "success");
+        loadData(); // โหลดตารางใหม่
+    } catch (error) {
+        console.error(error);
+        Swal.fire("เกิดข้อผิดพลาด", error.message, "error");
+    }
 }
 
-getData(render);
+async function loadData() {
+    try {
+        const data = await getEntries(); // เรียกจาก db.js
+        if (typeof renderTable === 'function') {
+            renderTable(data); // เรียกจาก ui.js
+        }
+    } catch (error) {
+        console.error("LoadData Error:", error);
+    }
+}
