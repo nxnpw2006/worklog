@@ -1,20 +1,12 @@
-function login(){
- const email = document.getElementById('email').value;
- const pass = document.getElementById('password').value;
- firebase.auth().signInWithEmailAndPassword(email,pass)
- .then(()=> location='index.html')
- .catch(e=>alert(e.message));
-}
+function loginGoogle(){
+    const provider = new firebase.auth.GoogleAuthProvider();
 
-function logout(){
- firebase.auth().signOut().then(()=>location='login.html');
+    firebase.auth().signInWithPopup(provider)
+    .then((result)=>{
+        console.log("login success", result.user);
+        window.location = "index.html";
+    })
+    .catch((error)=>{
+        alert(error.message);
+    });
 }
-
-firebase.auth().onAuthStateChanged(user=>{
- if(user){
-  const el=document.getElementById('user');
-  if(el) el.innerText = user.email;
- }else{
-  if(location.pathname.includes('index.html')) location='login.html';
- }
-});
