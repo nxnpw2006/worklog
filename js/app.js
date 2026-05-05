@@ -27,8 +27,7 @@ async function save() {
 async function loadData() {
     try {
         const data = await getEntries(); // เรียกจาก db.js
-        if (typeof renderTable === 'function') {
-            renderTable(data); // เรียกจาก ui.js
+        console.log("Data retrieved:", data);// เรียกจาก ui.js
         }
     } catch (error) {
         console.error("LoadData Error:", error);
