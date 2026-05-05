@@ -82,13 +82,13 @@ rowsHtml += `
     // สั่งให้ Lucide เปลี่ยนไอคอน i เป็นรูปภาพ
     lucide.createIcons();
 }
-// ฟังก์ชันสำหรับโชว์แจ้งเตือนมุมขวาบน
+// ฟังก์ชันสำหรับโชว์แจ้งเตือนมุมขวาบน (Toast)
 const showToast = (title, icon = 'success') => {
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
