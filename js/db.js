@@ -1,4 +1,4 @@
-const db = firebase.firestore();
+const firestore = firebase.firestore();
 
 function addData(data){
  return db.collection('worklogs').add(data);
