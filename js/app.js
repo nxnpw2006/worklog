@@ -1,3 +1,4 @@
+// --- ส่วนการบันทึกข้อมูล ---
 async function save() {
     const date = document.getElementById("date").value;
     const inTime = document.getElementById("in").value;
@@ -7,7 +8,14 @@ async function save() {
     const close = document.getElementById("close").checked;
 
     if (!date || !inTime || !outTime) {
-        Swal.fire("กรุณากรอกข้อมูลให้ครบ", "", "warning");
+        // ใช้ Swal แบบ Popup สำหรับเตือนให้กรอกข้อมูล (ตามรูป image_042ed2.png)
+        Swal.fire({
+            title: 'ลืมกรอกข้อมูลหรือเปล่า?',
+            text: "เช็ควันที่และเวลาอีกทีนะ!",
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#7066e0'
+        });
         return;
     }
 
@@ -15,76 +23,39 @@ async function save() {
 
     try {
         await saveEntry({ date, inTime, outTime, breakHr, ot, close, ...c });
-        Swal.fire("บันทึกสำเร็จ!", "", "success");
-        loadData(); 
+        showToast("บันทึกข้อมูลสำเร็จแล้วจ้า!"); // แจ้งเตือนแบบ Toast
+        loadData();
     } catch (error) {
         console.error(error);
-        Swal.fire("เกิดข้อผิดพลาด", error.message, "error");
+        showToast("เกิดข้อผิดพลาด", "error");
     }
 }
 
-// แก้ไขจุดที่ปีกกาเกินตรงนี้ครับ
-async function loadData() {
-    try {
-        const data = await getEntries(); 
-        console.log("Data retrieved:", data);
-        renderTable(data); // เพิ่มบรรทัดนี้เพื่อให้ข้อมูลแสดงในตาราง
-    } catch (error) {
-        console.error("LoadData Error:", error);
-    }
-}
-
-window.onload = () => {
-    renderTable([]); 
-    loadData(); 
-};
-
+// --- ส่วนการลบข้อมูล ---
 async function deleteData(id) {
     const result = await Swal.fire({
-        title: 'ยืนยันการลบ?',
-        text: "ข้อมูลนี้จะหายไปถาวรนะ",
+        title: 'จะลบจริงๆ เหรอ?',
+        text: "ลบแล้วกู้คืนไม่ได้น้า!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#000',
-        cancelButtonColor: '#d33',
+        cancelButtonColor: '#aaa',
         confirmButtonText: 'ลบเลย',
         cancelButtonText: 'ยกเลิก'
     });
 
     if (result.isConfirmed) {
         try {
-            await deleteEntry(id); 
-            Swal.fire('ลบแล้ว!', '', 'success');
-            loadData(); 
+            await deleteEntry(id);
+            showToast("ลบข้อมูลเรียบร้อยแล้ว!"); // แจ้งเตือนแบบ Toast
+            loadData();
         } catch (error) {
-            Swal.fire('เกิดข้อผิดพลาด', error.message, 'error');
+            showToast("ลบไม่สำเร็จ", "error");
         }
     }
 }
 
-let currentEditId = null; 
-
-function editData(id, date, inTime, outTime, breakHr, ot, close) {
-    document.getElementById("date").value = date;
-    document.getElementById("in").value = inTime;
-    document.getElementById("out").value = outTime;
-    document.getElementById("break").value = breakHr;
-    
-    // แปลงสถานะเพื่อให้ปุ่ม Toggle ทำงานถูกต้อง
-    const otBtn = document.querySelector(`[onclick*="setToggle('ot', ${ot}"]`);
-    const closeBtn = document.querySelector(`[onclick*="setToggle('close', ${close}"]`);
-    if(otBtn) otBtn.click();
-    if(closeBtn) closeBtn.click();
-
-    currentEditId = id;
-    const mainBtn = document.querySelector(".btn-main");
-    mainBtn.innerText = "ยืนยันการแก้ไขข้อมูล";
-    mainBtn.style.backgroundColor = "#2ecc71"; 
-    mainBtn.onclick = confirmUpdate;
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
+// --- ส่วนการแก้ไขข้อมูล (ยืนยัน) ---
 async function confirmUpdate() {
     const date = document.getElementById("date").value;
     const inTime = document.getElementById("in").value;
@@ -98,27 +69,16 @@ async function confirmUpdate() {
     try {
         await updateEntry(currentEditId, { date, inTime, outTime, breakHr, ot, close, ...c });
         
+        // คืนค่าปุ่ม
         const mainBtn = document.querySelector(".btn-main");
         mainBtn.innerText = "บันทึกข้อมูลวันนี้";
         mainBtn.style.backgroundColor = ""; 
         mainBtn.onclick = save;
         currentEditId = null;
 
-        Swal.fire("แก้ไขสำเร็จ!", "", "success");
+        showToast("อัปเดตข้อมูลให้แล้วนะ!"); // แจ้งเตือนแบบ Toast
         loadData();
     } catch (error) {
-        Swal.fire("ผิดพลาด", error.message, "error");
+        showToast("แก้ไขไม่สำเร็จ", "error");
     }
 }
-// ใส่ใน block try หลังบันทึกสำเร็จ
-await saveEntry({ ... });
-showToast("บันทึกข้อมูลสำเร็จแล้วจ้า!"); 
-loadData();
-// ใส่ใน block try หลังลบสำเร็จ
-await deleteEntry(id);
-showToast("ลบข้อมูลเรียบร้อยแล้ว!", "success");
-loadData();
-// ใส่ใน block try หลังอัปเดตสำเร็จ
-await updateEntry(currentEditId, { ... });
-showToast("อัปเดตข้อมูลให้แล้วนะ!");
-loadData();
