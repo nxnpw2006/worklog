@@ -11,35 +11,34 @@ async function save() {
         return;
     }
 
-    // เรียกฟังก์ชันคำนวณจาก calc.js
     const c = calc(inTime, outTime, breakHr, ot, close);
 
     try {
         await saveEntry({ date, inTime, outTime, breakHr, ot, close, ...c });
         Swal.fire("บันทึกสำเร็จ!", "", "success");
-        loadData(); // โหลดตารางใหม่
+        loadData(); 
     } catch (error) {
         console.error(error);
         Swal.fire("เกิดข้อผิดพลาด", error.message, "error");
     }
 }
 
+// แก้ไขจุดที่ปีกกาเกินตรงนี้ครับ
 async function loadData() {
     try {
-        const data = await getEntries(); // เรียกจาก db.js
-        console.log("Data retrieved:", data);// เรียกจาก ui.js
-        }
+        const data = await getEntries(); 
+        console.log("Data retrieved:", data);
+        renderTable(data); // เพิ่มบรรทัดนี้เพื่อให้ข้อมูลแสดงในตาราง
     } catch (error) {
         console.error("LoadData Error:", error);
     }
 }
-// ในส่วนท้ายของไฟล์ app.js หรือใน DOMContentLoaded
+
 window.onload = () => {
-    renderTable([]); // แสดงตารางว่างๆ ทันที
-    // จากนั้นค่อยเรียกโหลดข้อมูลจริงจาก Firebase
+    renderTable([]); 
     loadData(); 
 };
-// --- ระบบลบข้อมูล ---
+
 async function deleteData(id) {
     const result = await Swal.fire({
         title: 'ยืนยันการลบ?',
@@ -54,40 +53,35 @@ async function deleteData(id) {
 
     if (result.isConfirmed) {
         try {
-            await deleteEntry(id); // เรียกจาก db.js
+            await deleteEntry(id); 
             Swal.fire('ลบแล้ว!', '', 'success');
-            loadData(); // โหลดตารางใหม่
+            loadData(); 
         } catch (error) {
             Swal.fire('เกิดข้อผิดพลาด', error.message, 'error');
         }
     }
 }
 
-// --- ระบบแก้ไขข้อมูล ---
-let currentEditId = null; // เก็บ ID ที่กำลังแก้ไข
+let currentEditId = null; 
 
 function editData(id, date, inTime, outTime, breakHr, ot, close) {
-    // 1. ดึงข้อมูลจากตารางขึ้นไปใส่ใน Form ด้านบน
     document.getElementById("date").value = date;
     document.getElementById("in").value = inTime;
     document.getElementById("out").value = outTime;
     document.getElementById("break").value = breakHr;
     
-    // 2. ปรับปุ่ม Toggle OT และ ปิดร้าน
-    // (ฟังก์ชัน setToggle ต้องมีอยู่ในหน้า HTML ตามที่เคยเขียนให้)
+    // แปลงสถานะเพื่อให้ปุ่ม Toggle ทำงานถูกต้อง
     const otBtn = document.querySelector(`[onclick*="setToggle('ot', ${ot}"]`);
     const closeBtn = document.querySelector(`[onclick*="setToggle('close', ${close}"]`);
     if(otBtn) otBtn.click();
     if(closeBtn) closeBtn.click();
 
-    // 3. เปลี่ยนปุ่ม "บันทึก" เป็น "ยืนยันการแก้ไข"
     currentEditId = id;
     const mainBtn = document.querySelector(".btn-main");
     mainBtn.innerText = "ยืนยันการแก้ไขข้อมูล";
-    mainBtn.style.backgroundColor = "#2ecc71"; // เปลี่ยนเป็นสีเขียวชั่วคราว
+    mainBtn.style.backgroundColor = "#2ecc71"; 
     mainBtn.onclick = confirmUpdate;
     
-    // เลื่อนหน้าจอขึ้นไปที่ฟอร์ม
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -104,7 +98,6 @@ async function confirmUpdate() {
     try {
         await updateEntry(currentEditId, { date, inTime, outTime, breakHr, ot, close, ...c });
         
-        // คืนค่าปุ่มบันทึกกลับเป็นปกติ
         const mainBtn = document.querySelector(".btn-main");
         mainBtn.innerText = "บันทึกข้อมูลวันนี้";
         mainBtn.style.backgroundColor = ""; 
