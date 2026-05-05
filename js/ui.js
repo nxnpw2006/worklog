@@ -17,26 +17,29 @@ function renderTable(data) {
             totalJobIncome += (item.totalIncome - (item.extraPay || 0));
             totalExtra += parseFloat(item.extraPay || 0);
 
-            rowsHtml += `
-                <tr style="border-bottom: 1px solid #eeeeee;">
-                    <td style="padding: 15px 10px;">${item.date.split('-').reverse().slice(0,2).join('/')}</td>
-                    <td style="padding: 15px 10px; text-align:center;">${item.inTime}-${item.outTime}</td>
-                    <td style="padding: 15px 10px; text-align:center;">${parseFloat(item.workHours).toFixed(2)}</td>
-                    <td style="padding: 15px 10px; text-align:center;">${item.ot ? '✓' : '-'}</td>
-                    <td style="padding: 15px 10px; text-align:center;">${item.close ? '✓' : '-'}</td>
-                    <td style="padding: 15px 10px; text-align:right; font-weight: 600;">฿${item.totalIncome}</td>
-                    <td style="padding: 15px 10px; text-align:right;">
-                        <div style="display: flex; gap: 5px; justify-content: flex-end;">
-                            <button onclick="editData('${item.id}')" style="background:none; border:2px solid #000; cursor:pointer; padding:5px; border-radius:2px; display:flex; align-items:center;">
-                                <i data-lucide="pencil" style="width:16px; height:16px;"></i>
-                            </button>
-                            <button onclick="deleteData('${item.id}')" style="background:none; border:2px solid #000; cursor:pointer; padding:5px; border-radius:2px; display:flex; align-items:center;">
-                                <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+            // เพิ่มฟังก์ชันดึงไอคอน Lucide มาใช้ในตาราง
+rowsHtml += `
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <td style="padding: 15px 10px;">${item.date.split('-').reverse().slice(0,2).join('/')}</td>
+        <td style="padding: 15px 10px; text-align:center;">${item.inTime}-${item.outTime}</td>
+        <td style="padding: 15px 10px; text-align:center;">${parseFloat(item.workHours).toFixed(2)}</td>
+        <td style="padding: 15px 10px; text-align:center;">${item.ot ? '✓' : '-'}</td>
+        <td style="padding: 15px 10px; text-align:center;">${item.close ? '✓' : '-'}</td>
+        <td style="padding: 15px 10px; text-align:right; font-weight: 600;">฿${item.totalIncome}</td>
+        <td style="padding: 15px 10px; text-align:right;">
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <button onclick="editData('${item.id}', '${item.date}', '${item.inTime}', '${item.outTime}', '${item.breakHr}', ${item.ot}, ${item.close})" 
+                        style="background:none; border:2px solid #000; cursor:pointer; padding:6px; border-radius:2px; display:flex; align-items:center;">
+                    <i data-lucide="pencil" style="width:16px; height:16px; stroke-width:3px;"></i>
+                </button>
+                <button onclick="deleteData('${item.id}')" 
+                        style="background:none; border:2px solid #000; cursor:pointer; padding:6px; border-radius:2px; display:flex; align-items:center;">
+                    <i data-lucide="trash-2" style="width:16px; height:16px; stroke-width:3px;"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+`;
         });
     }
 
