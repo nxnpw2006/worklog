@@ -110,3 +110,15 @@ async function confirmUpdate() {
         Swal.fire("ผิดพลาด", error.message, "error");
     }
 }
+// ใส่ใน block try หลังบันทึกสำเร็จ
+await saveEntry({ ... });
+showToast("บันทึกข้อมูลสำเร็จแล้วจ้า!"); 
+loadData();
+// ใส่ใน block try หลังลบสำเร็จ
+await deleteEntry(id);
+showToast("ลบข้อมูลเรียบร้อยแล้ว!", "success");
+loadData();
+// ใส่ใน block try หลังอัปเดตสำเร็จ
+await updateEntry(currentEditId, { ... });
+showToast("อัปเดตข้อมูลให้แล้วนะ!");
+loadData();
