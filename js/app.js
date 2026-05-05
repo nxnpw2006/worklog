@@ -1,23 +1,16 @@
-async function save() {
-  const date = document.getElementById("date").value;
-  const inTime = document.getElementById("in").value;
-  const outTime = document.getElementById("out").value;
-  const breakHr = parseFloat(document.getElementById("break").value);
+function save(){
+ const date=document.getElementById('date').value;
+ const timeIn=document.getElementById('in').value;
+ const timeOut=document.getElementById('out').value;
+ const breakHr=parseFloat(document.getElementById('break').value)||0;
+ const ot=document.getElementById('ot').checked;
+ const close=document.getElementById('close').checked;
 
-  const ot = document.getElementById("ot").checked;
-  const close = document.getElementById("close").checked;
+ if(!date||!timeIn||!timeOut) return alert('กรอกข้อมูลให้ครบ');
 
-  const c = calc(inTime, outTime, breakHr, ot, close);
+ const c=calc(timeIn,timeOut,breakHr,ot,close);
 
-  await saveEntry({
-    date,
-    ...c
-  });
-
-  loadData();
+ addData({date,timeIn,timeOut,breakHr,ot,close,...c});
 }
 
-async function loadData() {
-  const data = await getEntries();
-  renderTable(data);
-}
+getData(render);
