@@ -21,7 +21,15 @@ async function getEntries() {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
-// ลบข้อมูล
+// ฟังก์ชันลบข้อมูล
 async function deleteEntry(id) {
     return await dbStore.collection("worklogs").doc(id).delete();
+}
+
+// ฟังก์ชันอัปเดตข้อมูล (แก้ไข)
+async function updateEntry(id, data) {
+    return await dbStore.collection("worklogs").doc(id).update({
+        ...data,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
 }
