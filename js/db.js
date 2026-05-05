@@ -1,18 +1,14 @@
-async function saveEntry(data) {
-  await db.collection("worklogs").add({
-    ...data,
-    uid: currentUser.uid
-  });
+const db = firebase.firestore();
+
+function addData(data){
+ return db.collection('worklogs').add(data);
 }
 
-async function getEntries() {
-  const snap = await db.collection("worklogs")
-    .where("uid", "==", currentUser.uid)
-    .get();
-
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-}
-
-async function deleteEntry(id) {
-  await db.collection("worklogs").doc(id).delete();
+function getData(cb){
+ db.collection('worklogs').orderBy('date','desc')
+ .onSnapshot(snap=>{
+  let arr=[];
+  snap.forEach(doc=>arr.push({...doc.data(),id:doc.id}));
+  cb(arr);
+ });
 }
